@@ -7,14 +7,11 @@ import bodyParser from "body-parser";
 
 import routesGroups from "./routes/index.js"
 
-
 const PORT = 3007;
 const app = express();
 
-
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
 
 app.use('/groups', routesGroups);
 
