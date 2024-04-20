@@ -1,4 +1,4 @@
-import groupServ from "../services/group.services.js";
+import groupServ  from "../services/group.service.js";
 
 const getAll = async (req, res) => {
     const data = groupServ.data();
@@ -6,9 +6,13 @@ const getAll = async (req, res) => {
 };
 
 const getId = async (req, res) => {
-    const data = groupServ.getId(req.params.id);
+    const group = groupServ.getId(req.params.id);
     console.log(req.params.id);
-    return res.status(200).json(data);
+
+    if (!group) {
+        return res.status(404).json({message:`Groups with id ${req.params.id} does not exist`});
+    }
+    return res.status(200).json(group);
 };
 
 const postGroup = async (req, res) => {

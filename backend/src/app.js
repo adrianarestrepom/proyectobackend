@@ -1,11 +1,15 @@
 
 // const apiRoutes = require('./routes')
 
+
+
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 
-import routesGroups from "./routes/index.js"
+import routesGroups from "./router/group.router.js"
+
+
 
 const PORT = 3007;
 const app = express();
