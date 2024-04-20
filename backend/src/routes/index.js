@@ -1,7 +1,7 @@
-import express from "express";
-import groupsControl from "../controllers/group.controller.js"
+import groupsControl from "../controllers/group.controller.js";
+import Router from 'express-promise-router';
 
-const router = express.Router();
+const router = Router();
 
 router.get('/', groupsControl.getAll);
 router.get('/:id', groupsControl.getId);
