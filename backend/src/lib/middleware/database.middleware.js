@@ -1,5 +1,5 @@
 import pg from 'pg'
-const { Pool } = pg
+const { Pool } = pg;
 const pool = new Pool({
     // same as
     // user: process.env.PGUSER,
@@ -9,12 +9,12 @@ const pool = new Pool({
     // port: process.env.PGPORT,
 })
 
-const requireTransactionMap = {
+export const requireTransactionMap = {
     POST: true,
     PUT: true,
 }
 
-const connectDatabase = async (req,res,next) => {
+export const connectDatabase = async (req,res,next) => {
     // resolve db client
     let dbClient = null;
     try {
@@ -24,6 +24,7 @@ const connectDatabase = async (req,res,next) => {
         if (req.doTransaction) {
             await req.dbClient.query('BEGIN');
         }
+        console.info('Database connected');
         next();
     } catch (err) {
         res.status(503).end();
@@ -31,17 +32,18 @@ const connectDatabase = async (req,res,next) => {
     }
 }
 
-const commitDatabase = async (req,_res,next) => {
+export const commitDatabase = async (req,_res,next) => {
     if (req.doTransaction) {
         await req.dbClient.query('COMMIT');
-        req.dbClient.release();
-        req.dbClient = undefined;
-        req.doTransaction = undefined;
-    }
+    }  
+    req.dbClient.release();
+    req.dbClient = undefined;
+    req.doTransaction = undefined;
+    console.info('Database disconnected');
     next();
 }
 
-const rollbackDatabase = async (err, req, res, next) => {
+export const rollbackDatabase = async (err, req, res, next) => {
     if (req.doTransaction && req.dbClient){
         console.info('rollback transaction!');
         await req.dbClient.query('ROLLBACK');
@@ -62,8 +64,3 @@ const rollbackDatabase = async (err, req, res, next) => {
     next();
 }
 
-export {
-    connectDatabase,
-    commitDatabase,
-    rollbackDatabase
-};

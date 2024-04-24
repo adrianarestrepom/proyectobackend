@@ -1,24 +1,17 @@
-
-// const apiRoutes = require('./routes')
-
-
-
+import "dotenv/config"
 import express from "express";
 import cors from "cors";
+import mainRouter from "./routers/async.router.js"
+
 import bodyParser from "body-parser";
 
-import routesGroups from "./router/group.router.js"
-
-
-
-const PORT = 3007;
 const app = express();
+const port = process.env.PORT || 3000;
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+app.use(mainRouter());
 
-app.use('/groups', routesGroups);
-
-app.listen(PORT, () => {
-    console.log(`Proceso de servidor escuchando en el puerto ${PORT}`)
-  });
+app.listen(port, () => {
+  console.info(`Listening on port ${port}`)
+});
