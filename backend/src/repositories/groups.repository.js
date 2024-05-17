@@ -10,6 +10,12 @@ const GET_BY_ID = `
     WHERE id = $1
 `;
 
+const DELETE_BY_ID = `
+    DELETE 
+    FROM GROUPS 
+    WHERE id = $1
+`;
+
 const Repository = (dbClient) => {
 
     const getAll = async () => {
@@ -20,13 +26,20 @@ const Repository = (dbClient) => {
 
     const getById = async (id) => {
         if (!id) throw new Error("ID is required"); // Verifica que el ID no sea nulo o indefinido
-        const result = await dbClient.query(GET_BY_ID, [id]); // Pasa el ID como parámetro
+        const result = await dbClient.query(GET_BY_ID,[id]); // Pasa el ID como parámetro
         return result.rows[0]; // Asume que siempre habrá un resultado
+    };
+
+    const deleteById = async (id) => {
+        if (!id) throw new Error("ID is required"); // Verifica que el ID no sea nulo o indefinido
+        const result = await dbClient.query(DELETE_BY_ID,[id]); // Pasa el ID como parámetro
+        return result.rowCount > 0;
     };
 
     return {
         getAll,
         getById,
+        deleteById,
     };
 };
 

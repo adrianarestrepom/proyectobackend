@@ -12,9 +12,14 @@ const Service = (dbClient) => {
         return await repository.getById(id);
     }
 
+    const deleleById= async (id) => {
+        return await repository.deleteById(id);
+    }
+
     return {
         getAll,
         getById,
+        deleleById, 
     }
 
 }

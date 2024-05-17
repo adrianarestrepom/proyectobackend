@@ -12,6 +12,7 @@ const pool = new Pool({
 export const requireTransactionMap = {
     POST: true,
     PUT: true,
+    DELETE: true,
 }
 
 export const connectDatabase = async (req,res,next) => {
