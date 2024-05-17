@@ -16,6 +16,13 @@ const DELETE_BY_ID = `
     WHERE id = $1
 `;
 
+const CREATE = `
+    INSERT 
+    INTO GROUPS 
+    (owneruserid, name, color) VALUES ($1,$2,$3)
+    RETURNING id, owneruserid, name, color
+`;
+
 const Repository = (dbClient) => {
 
     const getAll = async () => {
@@ -36,10 +43,20 @@ const Repository = (dbClient) => {
         return result.rowCount > 0;
     };
 
+    const create = async ({owneruserid, name, color}) => {
+        // Construye la consulta con los parámetros
+        const queryText = CREATE.replace('$1', `'${owneruserid}'`).replace('$2', `'${name}'`).replace('$3', `'${color}'`);
+        
+        const result = await dbClient.query(queryText);
+        return result.rows[0];
+    };
+    
+
     return {
         getAll,
         getById,
         deleteById,
+        create,
     };
 };
 

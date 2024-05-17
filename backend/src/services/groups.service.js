@@ -16,10 +16,16 @@ const Service = (dbClient) => {
         return await repository.deleteById(id);
     }
 
+    const create = async (group) => {
+        //faltan validaciones
+        return await repository.create(group);
+    }
+
     return {
         getAll,
         getById,
         deleleById, 
+        create,
     }
 
 }
