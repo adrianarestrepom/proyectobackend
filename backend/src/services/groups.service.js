@@ -1,4 +1,5 @@
 import Repository from "../repositories/groups.repository.js";
+import AppError from "../lib/application.error.js";
 
 const Service = (dbClient) => {
 
@@ -17,71 +18,37 @@ const Service = (dbClient) => {
     }
 
     const create = async (group) => {
-        //faltan validaciones
+        
+        // Limpiar los datos 
+        const name = (group.name || '').trim(); 
+        if (name.length === 0) {
+            // Nombre invalido
+            throw AppError('El nombre es requerido', 400)
+        }
+        if (name.length > 30) {
+            // Nombre invalido
+            throw AppError('El nombre debe ser menor de 30 caracteres ', 400)
+        }        
+        const groupCount = await repository.countByName(name);
+        if (groupCount > 0) {
+            throw AppError('Ya existe un grupo con ese nombre ', 409)
+        }
         return await repository.create(group);
     }
 
+    const fullUpdateById = async(group) => {
+        return await repository.fullUpdateById(group);
+    }
+
+    
     return {
         getAll,
         getById,
         deleleById, 
         create,
+        fullUpdateById
     }
 
 }
 
 export default Service;
-
-
-
-
-
-
-
-
-
-
-
-// import dataBase from "../database/database.js";
-
-// const data = () => {
-//     return dataBase;
-// };
-
-// const getId = (idGroup) => {
-//     return dataBase.find((item) => item.id == idGroup)
-// };
-
-// const postGroup = (newGroupData) => {
-//     if (typeof newGroupData.name !== 'string'){
-//         return Promise.reject({
-//             mensaje: 'El nombre debe ser un texto',
-//             codigo: 400
-//         });
-//     }
-//     const validName = newGroupData.name.trim().length;
-//     if (validName <=0 || validName > 30){
-//         return Promise.reject({
-//             mensaje: 'Elige un nombre valido para continuar; debe tener menos de 30 caracteres',
-//             codigo: 400
-//         });
-//     }
-//     const nameExist = dataBase.find((item) => item.name == newGroupData.name)
-//     if (nameExist){
-//         return Promise.reject({
-//                 mensaje: 'El nombre del grupo ya existe',
-//                 codigo: 409
-//             });
-//     }
-    
-//     const maxId = dataBase.reduce((max, { id }) => Math.max(max, id), 0);
-//     const newGroup = { id: maxId + 1, ...newGroupData };
-//     if (!newGroup.color){
-//         newGroup.color = "Default"
-//     }
-//     dataBase.push(newGroup); // Agregar el nuevo grupo al array
-//     return Promise.resolve(newGroup); // Retorna una promesa resuelta con el nuevo grupo
-// };
-
-
-// export default {data, getId, postGroup};

@@ -42,11 +42,29 @@ const Controller = () => {
         
     }
 
+    const fullUpdateById = async (req, res) => {
+
+        const service = Service(req.dbClient);
+        const id = req.params.id;
+        const group = {
+            ...req.body,
+            id
+        };
+        const updatedGroup = await service.fullUpdateById(group);
+        if (updatedGroup) {
+            res.status(200).end;
+        } else {
+            res.status(404).end;
+        }       
+        
+    }
+
     return {
         getAll,
         getById,
         deleteById,
         create,
+        fullUpdateById,
     }
 }
 
