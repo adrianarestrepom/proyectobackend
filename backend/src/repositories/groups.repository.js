@@ -38,6 +38,13 @@ color = $2
 WHERE id = $3
 `;
 
+const COUNT_BY_NAME_NOT_ID = `
+SELECT COUNT (*) 
+    FROM GROUPS 
+    WHERE name = $1
+    AND id <> $2
+`;
+
 const Repository = (dbClient) => {
   const getAll = async () => {
     const result = await dbClient.query(GET_ALL); // Esta consulta no necesita parámetros
@@ -68,21 +75,29 @@ const Repository = (dbClient) => {
   };
 
   const countByName = async (name) => {
-  
-    const result = await dbClient.query(COUNT_BY_NAME, [name]); 
+    const result = await dbClient.query(COUNT_BY_NAME, [name]);
     console.info(result);
     const count = parseInt(result.rows[0].count);
-    if( isNaN(count)) {
-      throw 'Invalid countByName result, is NaN';
-    } 
+    if (isNaN(count)) {
+      throw "Invalid countByName result, is NaN";
+    }
     return count;
   };
 
-  const fullUpdateById = async ({id, name, color}) => {
-    const result = await dbClient.query(FULL_UPDATE_BY_ID,[name, color, id]);
-    return result.rowCount > 0
-        
-  }
+  const fullUpdateById = async ({ id, name, color }) => {
+    const result = await dbClient.query(FULL_UPDATE_BY_ID, [name, color, id]);
+    return result.rowCount > 0;
+  };
+
+  const countByNameNotId = async (name, id) => {
+    const result = await dbClient.query(COUNT_BY_NAME_NOT_ID, [name, id]);
+    console.info(result);
+    const count = parseInt(result.rows[0].count);
+    if (isNaN(count)) {
+      throw "Invalid countByName result, is NaN";
+    }
+    return count;
+  };
 
   return {
     getAll,
@@ -91,6 +106,7 @@ const Repository = (dbClient) => {
     create,
     countByName,
     fullUpdateById,
+    countByNameNotId,
   };
 };
 

@@ -19,16 +19,8 @@ const Service = (dbClient) => {
 
     const create = async (group) => {
         
-        // Limpiar los datos 
-        const name = (group.name || '').trim(); 
-        if (name.length === 0) {
-            // Nombre invalido
-            throw AppError('El nombre es requerido', 400)
-        }
-        if (name.length > 30) {
-            // Nombre invalido
-            throw AppError('El nombre debe ser menor de 30 caracteres ', 400)
-        }        
+        const name = validateName(group.name);
+
         const groupCount = await repository.countByName(name);
         if (groupCount > 0) {
             throw AppError('Ya existe un grupo con ese nombre ', 409)
@@ -37,8 +29,41 @@ const Service = (dbClient) => {
     }
 
     const fullUpdateById = async(group) => {
-        return await repository.fullUpdateById(group);
+
+        const name = validateName(group.name);
+        const existingGroup = await repository.getById(group.id);
+        if (!existingGroup) {
+            throw AppError('El grupo a modificar no existe ', 404)
+        }
+
+        const groupCount = await repository.countByNameNotId(name, group.id);
+        if (groupCount > 0) {
+            throw AppError('Ya existe otro grupo con ese nombre ', 409)
+        }
+
+        return await repository.fullUpdateById({
+            ...group,
+            name
+        });
     }
+
+    const validateName = (newName) => {
+
+     // Limpiar los datos 
+         const name = (newName || '').trim(); 
+         if (name.length === 0) {
+             // Nombre invalido
+             throw AppError('El nombre es requerido', 400)
+         }
+         if (name.length > 30) {
+             // Nombre invalido
+             throw AppError('El nombre debe ser menor de 30 caracteres ', 400)
+         } 
+
+         return name;
+        } 
+
+    
 
     
     return {
