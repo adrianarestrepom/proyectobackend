@@ -27,7 +27,7 @@ const Controller = () => {
         const service = Service(req.dbClient);
         const deleted = await service.deleleById(req.params.id);
         if (deleted) {
-            res.status(200).end;
+            res.status(200).end();
         } else {
             res.status(404).end();
         } 
