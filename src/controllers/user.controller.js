@@ -8,35 +8,26 @@ const UserController = () => {
 
   const getAll = async (req, res) => {
     console.log(2.1, '[User] Controller Get All');
-
     const users = await userService.getAll();
-
-    return res.status(StatusCodes.OK).json({
-      users,
-    });
+    return res.status(StatusCodes.OK).json({ users });
   };
 
   const getById = async (req, res) => {
     console.log(2.1, '[User] Controller Get By Id');
-
     const user = await userService.getById(req.params.id);
-
     if (!user) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: `User with id ${req.params.id} does not exist` });
+      return res.status(StatusCodes.NOT_FOUND).json({ message: `User with id ${req.params.id} does not exist` });
     }
-
-    return res.status(StatusCodes.OK).json({
-      user,
-    });
+    return res.status(StatusCodes.OK).json({ user });
   };
 
   const create = async (req, res) => {
     console.log(2.1, '[User] Controller Create');
-
+    const existingUser = await userService.getByEmail(req.body.email);
+    if (existingUser) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "El correo ya se encuentra registrado" });
+    }
     const user = await userService.create(req.body);
-
     return res.status(StatusCodes.CREATED).json(user);
   };
 
