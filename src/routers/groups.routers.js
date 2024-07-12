@@ -9,9 +9,9 @@ const GroupsRouter = () => {
 
     router.get('/', continuator(controller.getAll));
     router.get('/:id', continuator(controller.getById));
-    router.delete('/:id', continuator(controller.deleteById));
     router.post('/', continuator(controller.create));
-    router.put('/groups/:id', continuator(controller.fullUpdateById));
+    router.put('/:id', continuator(controller.fullUpdateById));
+    router.delete('/:id', continuator(controller.deleteById));
 
     return router;
 

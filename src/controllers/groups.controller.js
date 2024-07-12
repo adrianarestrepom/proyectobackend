@@ -52,9 +52,9 @@ const Controller = () => {
         };
         const updatedGroup = await service.fullUpdateById(group);
         if (updatedGroup) {
-            res.status(200).end;
+            res.status(200).end();
         } else {
-            res.status(404).end;
+            res.status(404).end();
         }       
         
     }
